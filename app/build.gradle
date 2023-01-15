@@ -1,0 +1,84 @@
+plugins {
+//    id 'com.android.application'
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'jsy.test.calulatorlib'
+    compileSdk 32
+
+    defaultConfig {
+//        applicationId "jsy.test.calulatorlib"
+        minSdk 24
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    //aar 이름설정
+    libraryVariants.all{
+        variant ->
+            variant.outputs.each{
+                    // on below line we are setting a name to our apk
+                output->
+                    // 앱의 이름을 지정해줍니다.
+                    def appName = "TestModule"
+                    // 파일생성 날짜를 이용하기 위한 처리.
+                    def formattedDate = new Date().format('yyyyMMdd')
+                    // 버전_(버전코드)_날짜
+                    def verName = "$formattedDate"
+                    // on below line we are creating a new name for our apk.
+                    def newName = output.outputFileName
+                    // on below line we are replacing our previous name with our app name.
+                    newName = newName.replace("app-", "${appName}-")
+                    // on below line we are replacing -release with our formatted date.
+                    newName = newName.replace("-release", "_release_" + verName)
+                    newName = newName.replace("-debug", "_debug_" + verName)
+                    // at last we are setting our apk name to it.
+                    output.outputFileName  = newName
+            }
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+
+    //Test용
+    def testVersion = '3.5.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$testVersion"
+    androidTestImplementation "androidx.test:runner:$testVersion"
+    androidTestImplementation "androidx.test:rules:$testVersion"
+
+    // Optional -- Robolectric environment
+    testImplementation 'androidx.test:core:1.5.0'
+    // Optional -- Mockito framework
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+}
